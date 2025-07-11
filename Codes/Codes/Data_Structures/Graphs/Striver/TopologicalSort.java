@@ -2,11 +2,30 @@ package Codes.Data_Structures.Graphs.Striver;
 
 import java.util.*;
 
-// Topological sort using Kahn's algorithm (BFS-based)
+/**
+ * Topological Sort of a Directed Acyclic Graph (DAG)
+ *
+ * 📋 Purpose:
+ * Find a linear ordering of vertices such that for every directed edge u → v,
+ * vertex u comes before v in the ordering.
+ *
+ * Common applications:
+ *   - Task scheduling
+ *   - Course prerequisite ordering
+ *   - Compilation order of files
+ *
+ * ✅ Works only on Directed Acyclic Graphs (DAGs).
+ *
+ * Time Complexity: O(V + E)  
+ *   - Each vertex and edge is processed exactly once.
+ *
+ * Space Complexity: O(V + E)  
+ *   - For adjacency list + auxiliary arrays/stack/queue.
+ */
 public class TopologicalSort {
 
     /**
-     * Computes topological sort of a directed acyclic graph using Kahn's Algorithm.
+     * Computes topological sort of a DAG using Kahn's Algorithm (BFS-based)
      * @param V - number of vertices
      * @param edges - list of directed edges
      * @return list of nodes in topological order
@@ -14,7 +33,7 @@ public class TopologicalSort {
     public static ArrayList<Integer> topoSortBFS(int V, int[][] edges) {
         int[] inDegree = new int[V]; // in-degree of each vertex
         List<List<Integer>> adj = new ArrayList<>();
-        
+
         // Step 1: Build adjacency list
         for (int i = 0; i < V; i++) adj.add(new ArrayList<>());
         for (int[] edge : edges) {
@@ -22,14 +41,14 @@ public class TopologicalSort {
             adj.get(u).add(v);
         }
 
-        // Step 2: Calculate in-degree of each vertex
+        // Step 2: Compute in-degree of each vertex
         for (int i = 0; i < V; i++) {
             for (int neighbor : adj.get(i)) {
                 inDegree[neighbor]++;
             }
         }
 
-        // Step 3: Initialize queue with all vertices having in-degree 0
+        // Step 3: Add vertices with in-degree 0 to queue
         Queue<Integer> q = new LinkedList<>();
         for (int i = 0; i < V; i++) {
             if (inDegree[i] == 0) {
@@ -39,12 +58,12 @@ public class TopologicalSort {
 
         ArrayList<Integer> topo = new ArrayList<>();
 
-        // Step 4: Process queue
+        // Step 4: Process nodes
         while (!q.isEmpty()) {
             int node = q.poll();
             topo.add(node);
 
-            // Reduce in-degree of all its neighbors
+            // Decrease in-degree of neighbors
             for (int neighbor : adj.get(node)) {
                 inDegree[neighbor]--;
                 if (inDegree[neighbor] == 0) {
@@ -57,9 +76,9 @@ public class TopologicalSort {
     }
 
     /**
-     * Computes topological sort of a DAG using DFS
+     * Helper DFS function for topological sort
      */
-    public static void dfs(int node, List<List<Integer>> adj, boolean[] visited, Stack<Integer> stack) {
+    private static void dfs(int node, List<List<Integer>> adj, boolean[] visited, Stack<Integer> stack) {
         visited[node] = true;
 
         for (int neighbor : adj.get(node)) {
@@ -68,15 +87,21 @@ public class TopologicalSort {
             }
         }
 
-        // After visiting all neighbors, push this node to stack
+        // Push current node to stack after visiting all neighbors
         stack.push(node);
     }
 
+    /**
+     * Computes topological sort of a DAG using DFS
+     * @param V - number of vertices
+     * @param edges - list of directed edges
+     * @return list of nodes in topological order
+     */
     public static ArrayList<Integer> topoSortDFS(int V, int[][] edges) {
         boolean[] visited = new boolean[V];
         Stack<Integer> stack = new Stack<>();
         List<List<Integer>> adj = new ArrayList<>();
-        
+
         // Step 1: Build adjacency list
         for (int i = 0; i < V; i++) adj.add(new ArrayList<>());
         for (int[] edge : edges) {
@@ -84,14 +109,14 @@ public class TopologicalSort {
             adj.get(u).add(v);
         }
 
-        // Step 2: Call DFS for each unvisited node
+        // Step 2: Run DFS for unvisited nodes
         for (int i = 0; i < V; i++) {
             if (!visited[i]) {
                 dfs(i, adj, visited, stack);
             }
         }
 
-        // Step 3: Extract nodes from stack
+        // Step 3: Collect nodes from stack
         ArrayList<Integer> topo = new ArrayList<>();
         while (!stack.isEmpty()) {
             topo.add(stack.pop());
@@ -100,6 +125,9 @@ public class TopologicalSort {
         return topo;
     }
 
+    /**
+     * Main method to test the algorithms
+     */
     public static void main(String[] args) {
         int V = 6;
         int[][] edges = {
@@ -111,7 +139,7 @@ public class TopologicalSort {
             {3, 1}
         };
 
-        System.out.println("Topological Sort (Kahn's Algorithm): " + topoSortBFS(V, edges));
+        System.out.println("Topological Sort (Kahn's Algorithm - BFS): " + topoSortBFS(V, edges));
         System.out.println("Topological Sort (DFS): " + topoSortDFS(V, edges));
     }
 }

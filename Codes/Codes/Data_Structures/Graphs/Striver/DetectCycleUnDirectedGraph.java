@@ -2,16 +2,16 @@ package Codes.Data_Structures.Graphs.Striver;
 
 import java.util.*;
 
-// Utility class to hold a node and its parent for BFS
-class Pair {
-    int node, parent;
-    public Pair(int node, int parent) {
-        this.node = node;
-        this.parent = parent;
-    }
-}
-
 public class DetectCycleUnDirectedGraph {
+    // Utility class to hold a node and its parent for BFS
+    static class Pair {
+        int node, parent;
+
+        public Pair(int node, int parent) {
+            this.node = node;
+            this.parent = parent;
+        }
+    }
 
     public static boolean checkForCycleBFS(int src, int V, List<List<Integer>> adj, boolean[] vis) {
         vis[src] = true;
@@ -45,7 +45,8 @@ public class DetectCycleUnDirectedGraph {
         // check all components
         for (int i = 0; i < V; i++) {
             if (!vis[i]) {
-                if (checkForCycleBFS(i, V, adj, vis)) return true;
+                if (checkForCycleBFS(i, V, adj, vis))
+                    return true;
             }
         }
         return false;
@@ -57,7 +58,8 @@ public class DetectCycleUnDirectedGraph {
         // explore all neighbors
         for (int it : adj.get(node)) {
             if (!vis[it]) {
-                if (checkForCycleDFS(it, node, vis, adj)) return true;
+                if (checkForCycleDFS(it, node, vis, adj))
+                    return true;
             }
             // visited and not parent → cycle
             else if (it != parent) {
@@ -74,7 +76,8 @@ public class DetectCycleUnDirectedGraph {
         // check all components
         for (int i = 0; i < V; i++) {
             if (!vis[i]) {
-                if (checkForCycleDFS(i, -1, vis, adj)) return true;
+                if (checkForCycleDFS(i, -1, vis, adj))
+                    return true;
             }
         }
         return false;
